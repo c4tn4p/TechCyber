@@ -1,22 +1,3 @@
-# Write Up Root ME 🫚
-
-## HTTP - DNS Rebinding
-
-Lien du challenge
-- https://www.root-me.org/fr/Challenges/Reseau/HTTP-DNS-Rebinding
-
-- Contexte
-[DNS Rebinding Attacks Explained](https://www.youtube.com/watch?v=n1ZszREP1HM)
-
-Environnement de travail
-
-L'énoncé est le suivant :
-
-> Le devops de cette petite application web a peu de temps et peu de moyens. L’interface d’administration est ainsi, comme souvent, embarquée avec l’IHM utilisateur. Pour autant il s’est assuré qu’on ne puisse pas y accéder de l’extérieur !
-
-Le code source fourni par le challenge est le suivant :
-
-```Python3
 #!/usr/bin/env python3
 #coding: utf-8
  
@@ -38,17 +19,22 @@ AUTH_TOKEN = ''.join(random.choice(string.ascii_letters + string.digits) for i i
 random.seed(FLAG)
 app = flask.Flask(__name__, static_url_path='/static')
  
-### Super secure checks
+## Super secure checks
+# Est-ce que l'IP est globale (publique) ?
+# Si oui : retourner true, sinon retourner false.
 def valid_ip(ip):
     try:
         result = ipaddress.ip_address(ip)
         return result.is_global # Not a LAN address
     except Exception as e:
         return False
- 
+
+# Prend le FQDN renseigné dans le grabber, essaie de le résoudre en IP puis utilise valid_ip pour vérifier si l'IP est valide et globale.
 def valid_fqdn(fqdn):
     return valid_ip(socket.gethostbyname(fqdn))
- 
+
+# récupération du contenu de l'URL spécifiée dans le grabber
+# Si erreur, renvoie de l'image no_idea
 def get_url(url, recursion):
     try:
         r = requests.get(url, allow_redirects=False, timeout=5, headers={'rm-token': AUTH_TOKEN})
@@ -63,6 +49,8 @@ def get_url(url, recursion):
                    </body>
                </html>
            ''' % (flask.url_for('static', filename='no_idea.jpg'),)
+# Si la réponse contient une redirection (en-tête location), signifie qu'une redirection est demandée
+# Si plus d'une redirection envoi de l'image too_far.jpg
     if 'location' in r.headers:
         if recursion > 1:
             return '''
@@ -81,7 +69,10 @@ def get_url(url, recursion):
             return check
         return get_url(url, recursion + 1)
     return r.text
- 
+
+# Check la validité de l'url à l'aide de valid_fqdn
+# S'il se passe une exception, envoi de l'image wait_what
+# Si la validation échoue, envoi de l'image wow-so-clever 
 def check_url(url):
     try:
         #check = valid_fqdn(urlparse(url).netloc.split(':')[0])
@@ -112,6 +103,13 @@ def check_url(url):
  
  
 # Internal route, only for local administration!
+# La fonction admin est appelée lorsque l'on se connecte à /admin
+# Pour accéder à /admin il faut :
+# Que l'IP soit dans la liste des IP autorisées, soit 127.0.0.1
+# que la requête contienne rm-token en entête
+# Que la valeur de cet entête soit AUTH_TOKEN
+# Si ce n'est pas le cas, on voit l'image magicword_jurassic.jpg
+# Si les conditions sont remplies, on peut accéder à la page admin
 @app.route('/admin')
 def admin():
     if flask.request.remote_addr not in AUTHORIZED_IPS or 'rm-token' not in flask.request.headers or flask.request.headers['rm-token'] != AUTH_TOKEN:
@@ -204,9 +202,3 @@ def index():
 @app.errorhandler(404)
 def page_not_found(e):
    return "Nope. You are lost. Nothing here but me. The forever alone 404 page that no one ever want to see."
-```
-
-https://www.digitalocean.com/community/tutorials/how-to-install-go-on-debian-10
-- https://github.com/sameersbn/docker-bind/issues/65
-- https://blog.compass-security.com/2021/02/the-good-old-dns-rebinding/
-- https://blog.bi0s.in/2021/12/05/Web/Vulpixelize-HITCONCTF2021/
