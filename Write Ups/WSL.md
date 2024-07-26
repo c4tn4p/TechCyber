@@ -76,6 +76,7 @@ chattr +i /etc/resolv.conf
 - Installing `ca-certificates` so we can safely use APT over HTTPS
 
 ```bash
+apt -y update
 apt -y install ca-certificates
 ```
 
