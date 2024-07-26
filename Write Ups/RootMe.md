@@ -24,7 +24,24 @@ Définition fournie par [Stéphane Bortzmeyer](https://www.bortzmeyer.org/) dans
 
 ### SOP - *Same Origin Policy*
 
-Origin = protocole + hostname + port. L’IP adresse résolue ne rendre pas dans la SOP
+Origin = protocole + hostname + port. L’IP adresse résolue ne rendre pas dans la SOP !
+
+La Same Origin Policy (SOP) est un principe de sécurité fondamentale dans les navigateurs web qui restreint la manière dont les documents ou les scripts chargés d'une origine peuvent interagir avec des ressources provenant d'une autre origine. Une origine est définie par la combinaison du protocole (par exemple, HTTP ou HTTPS), du nom de domaine et du port.
+
+La SOP a pour objectif principal de protéger les utilisateurs contre diverses attaques, notamment le Cross-Site Scripting (XSS) et le Cross-Site Request Forgery (CSRF). Elle garantit qu'un script chargé à partir d'une origine donnée ne peut pas accéder aux propriétés et aux méthodes des documents chargés à partir d'une autre origine.
+
+Deux URL ont la même origine si elles partagent les mêmes
+
+- Protocole : Exemple, `http://` ou `https://`
+- Nom de Domaine : `Exemple`, `example.com`
+- Port : Exemple, `:80` pour `HTTP` ou `:443` pour `HTTPS`
+
+Exemples d'Origines
+
+- `http://example.com/page1.html` et `http://example.com/page2.html` ont la même origine.
+- `http://example.com` et `https://example.com` ont des origines différentes (protocole différent).
+- `http://example.com` et `http://sub.example.com` ont des origines différentes (sous-domaine différent).
+- `http://example.com:80` et `http://example.com:8080` ont des origines différentes (port différent).
 
 ### iframe - *Inline Frame*
 
