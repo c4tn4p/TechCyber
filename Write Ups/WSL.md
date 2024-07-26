@@ -96,13 +96,13 @@ EOF
 ```bash
 apt update && apt -y full-upgrade && \
 apt -y install \
-bzip 2 \
+bzip2 \
 bzip3 \
 ccze \
 curl \
 dnsutils \
 git \
-haschat \
+hashcat \
 hping3 \
 htop \
 iftop \
