@@ -62,7 +62,7 @@ cat << EOF > /etc/resolv.conf
 # https://www.fdn.fr/actions/dns/
 nameserver 80.67.169.12 # ns0.fdn.fr
 nameserver 80.67.169.40 # ns1.fdn.fr
-EO
+EOF
 ```
 
 - Use [chattr](https://fr.wikipedia.org/wiki/Chattr) to add the `i` flag so that WSL won't touch it
